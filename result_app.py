@@ -1,14 +1,13 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="BDU Result Calculator", layout="wide")
+st.set_page_config(page_title="Result Calculator", layout="wide")
 
 # CSS - ለሞባይል እይታ የተስተካከለ
 st.markdown("""
     <style>
     .stApp { background-color: #F8F9FA; color: #2C3E50; }
     
-    /* በስልክ ላይ ኮለሞችን ጎን ለጎን ለማድረግ */
     [data-testid="column"] {
         display: flex;
         flex-direction: row !important;
@@ -17,7 +16,6 @@ st.markdown("""
         gap: 5px !important;
     }
     
-    /* የሳጥኖቹን ስፋት ማስተካከል */
     div[data-baseweb="input"], div[data-baseweb="base-input"] {
         width: 100% !important;
     }
@@ -46,7 +44,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# በምስሉ መሠረት የተስተካከለ የውጤት ሎጅክ
 def get_grade_info(mark):
     if mark >= 90: return 4.0, "A+"
     elif mark >= 85: return 4.0, "A"
@@ -61,7 +58,7 @@ def get_grade_info(mark):
     elif mark >= 30: return 0.0, "FX"
     else: return 0.0, "F"
 
-st.title("🎓 BDU Result Calculator")
+st.title("🎓 Result Calculator")
 
 # የስም መጻፊያ ክፍል
 first_name = st.text_input("First Name", placeholder="ስምዎን እዚህ ያስገቡ...")
@@ -69,7 +66,6 @@ first_name = st.text_input("First Name", placeholder="ስምዎን እዚህ ያ
 num_courses = 10
 course_data = []
 
-# የርዕስ ክፍሎች
 h1, h2, h3, h4, h5 = st.columns([2.5, 1, 1.2, 0.8, 1])
 h1.caption("ኮርስ")
 h2.caption("ECTS")
@@ -100,7 +96,6 @@ if st.button("ውጤቴን አስላ"):
         
         st.balloons()
         
-        # የስም አጻጻፍ ሎጅክ
         display_name = f"{first_name}'s" if first_name else "Your"
         
         rows_html = ""
@@ -110,8 +105,8 @@ if st.button("ውጤቴን አስላ"):
         slip_content = f"""
         <div class="result-slip">
             <div class="slip-header">
-                <h3 style="margin:0;">BAHIR DAR UNIVERSITY</h3>
-                <p style="margin:5px 0; font-size:16px; font-weight: bold; color: #2C3E50;">{display_name} Result Slip</p>
+                <h3 style="margin:0; text-transform: uppercase;">{display_name} Result Slip</h3>
+                <p style="margin:5px 0; font-size:12px; color: #718096;">Unofficial Semester Summary</p>
             </div>
             <table class="slip-table">
                 <tr><th>Course</th><th>ECTS</th><th>Mark</th><th>Grade</th></tr>
