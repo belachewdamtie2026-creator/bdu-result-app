@@ -47,15 +47,17 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 def get_grade_info(mark):
-    if mark >= 83: return 4.0, "A"
+    if mark >= 90: return 4.0, "A+"
+    elif mark >= 85: return 4.0, "A"
     elif mark >= 80: return 3.75, "A-"
     elif mark >= 75: return 3.5, "B+"
-    elif mark >= 68: return 3.0, "B"
+    elif mark >= 70: return 3.0, "B"
     elif mark >= 65: return 2.75, "B-"
     elif mark >= 60: return 2.5, "C+"
     elif mark >= 50: return 2.0, "C"
     elif mark >= 45: return 1.75, "C-"
     elif mark >= 40: return 1.0, "D"
+    elif mark >= 30: return 0.0, "FX"
     else: return 0.0, "F"
 
 st.title("🎓 BDU Result Calculator")
