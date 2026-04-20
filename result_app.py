@@ -3,10 +3,25 @@ import pandas as pd
 
 st.set_page_config(page_title="BDU Result Calculator", layout="wide")
 
-# CSS - ዲዛይኑን መጀመሪያ መጫን
+# CSS - ለሞባይል እይታ የተስተካከለ
 st.markdown("""
     <style>
     .stApp { background-color: #F8F9FA; color: #2C3E50; }
+    
+    /* በስልክ ላይ ኮለሞችን ጎን ለጎን ለማድረግ */
+    [data-testid="column"] {
+        display: flex;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        gap: 5px !important;
+    }
+    
+    /* የሳጥኖቹን ስፋት ማስተካከል */
+    div[data-baseweb="input"], div[data-baseweb="base-input"] {
+        width: 100% !important;
+    }
+
     div.stButton > button:first-child {
         background-color: #1A365D !important;
         color: white !important;
@@ -14,21 +29,20 @@ st.markdown("""
         height: 3.5em !important;
         width: 100% !important;
         font-weight: bold !important;
-        font-size: 18px !important;
     }
+
     .result-slip {
         background-color: white;
-        padding: 25px;
+        padding: 20px;
         border: 2px solid #1A365D;
         border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         color: #1A365D;
         margin-top: 20px;
+        overflow-x: auto; /* ለትናንሽ ስልኮች ሰንጠረዡ እንዳይቆረጥ */
     }
     .slip-header { text-align: center; border-bottom: 2px solid #1A365D; padding-bottom: 10px; margin-bottom: 20px; }
-    .slip-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-    .slip-table th { text-align: left; padding: 10px; background-color: #f8f9fa; border-bottom: 1px solid #1A365D; }
-    .slip-table td { padding: 10px; border-bottom: 1px solid #eee; color: #2C3E50; }
+    .slip-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .slip-table th, .slip-table td { text-align: left; padding: 8px; border-bottom: 1px solid #eee; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -49,15 +63,16 @@ st.title("🎓 BDU Result Calculator")
 num_courses = 10
 course_data = []
 
-h1, h2, h3, h4, h5 = st.columns([3, 1, 1, 1, 1])
-h1.write("**የኮርሱ ስም**")
-h2.write("**ECTS**")
-h3.write("**ውጤት (100)**")
-h4.write("**Grade**")
-h5.write("**Points**")
+# የርዕስ ክፍሎች በስልክ ላይ እንዳይዝረከረኩ
+h1, h2, h3, h4, h5 = st.columns([2.5, 1, 1.2, 0.8, 1])
+h1.caption("ኮርስ")
+h2.caption("ECTS")
+h3.caption("ውጤት")
+h4.caption("Gr")
+h5.caption("Pt")
 
 for i in range(num_courses):
-    col1, col2, col3, col4, col5 = st.columns([3, 1, 1, 1, 1])
+    col1, col2, col3, col4, col5 = st.columns([2.5, 1, 1.2, 0.8, 1])
     with col1: c_name = st.text_input(f"C{i}", key=f"n_{i}", label_visibility="collapsed", placeholder=f"ኮርስ {i+1}")
     with col2: ects = st.number_input(f"E{i}", min_value=1.0, value=5.0, key=f"e_{i}", label_visibility="collapsed")
     with col3: mark = st.number_input(f"M{i}", min_value=0.0, max_value=100.0, value=0.0, key=f"m_{i}", label_visibility="collapsed")
@@ -66,7 +81,7 @@ for i in range(num_courses):
     gp = ects * ng
     
     with col4: st.write(f"**{letter}**" if mark > 0 else "-")
-    with col5: st.write(f"**{gp:.2f}**" if mark > 0 else "-")
+    with col5: st.write(f"**{gp:.1f}**" if mark > 0 else "-")
     
     if mark > 0:
         course_data.append({"Course": c_name if c_name else f"Course {i+1}", "ECTS": ects, "Mark": mark, "Grade": letter, "GP": gp})
@@ -79,33 +94,23 @@ if st.button("ውጤቴን አስላ"):
         
         st.balloons()
         
-        # የሰንጠረዥ ረድፎችን ማዘጋጀት
         rows_html = ""
         for c in course_data:
             rows_html += f"<tr><td>{c['Course']}</td><td>{c['ECTS']}</td><td>{c['Mark']}</td><td><b>{c['Grade']}</b></td></tr>"
 
-        # ሙሉውን Slip በ HTML ማቅረብ
         slip_content = f"""
         <div class="result-slip">
             <div class="slip-header">
-                <h2 style="margin:0;">BAHIR DAR UNIVERSITY</h2>
-                <p style="margin:0; color: #718096;">Unofficial Student Semester Result Slip</p>
+                <h3 style="margin:0;">BAHIR DAR UNIVERSITY</h3>
+                <p style="margin:0; font-size:12px; color: #718096;">Unofficial Semester Result Slip</p>
             </div>
             <table class="slip-table">
-                <thead>
-                    <tr><th>Course Title</th><th>ECTS</th><th>Mark</th><th>Grade</th></tr>
-                </thead>
-                <tbody>
-                    {rows_html}
-                </tbody>
+                <tr><th>Course</th><th>ECTS</th><th>Mark</th><th>Grade</th></tr>
+                {rows_html}
             </table>
-            <div style="display: flex; justify-content: space-between; background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #eee;">
-                <div><b>Total ECTS:</b> {int(total_ects)}</div>
-                <div><b>Total GP:</b> {total_gp:.2f}</div>
-                <div style="color: #1A365D; font-size: 20px;"><b>GPA: {gpa:.2f}</b></div>
-            </div>
-            <div style="text-align: center; margin-top: 20px; font-size: 11px; color: #718096; border-top: 1px solid #eee; padding-top: 10px;">
-                Generated on 2026 | Developer: <b>Belachew Damtie</b>
+            <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 14px; font-weight: bold;">
+                <div>ECTS: {int(total_ects)}</div>
+                <div style="color: #1A365D; font-size: 18px;">GPA: {gpa:.2f}</div>
             </div>
         </div>
         """
@@ -113,4 +118,4 @@ if st.button("ውጤቴን አስላ"):
     else:
         st.warning("እባክህ መጀመሪያ ውጤት አስገባ።")
 
-st.markdown("<p style='text-align:center; color:#718096; padding-top:30px;'>Developer: Belachew Damtie</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align:center; color:#718096; font-size:10px;'>Developer: Belachew Damtie</p>", unsafe_allow_html=True)
