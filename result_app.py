@@ -1,7 +1,40 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="BDU GPA Calculator", layout="wide")
+# ገጹን ይበልጥ ማራኪ ለማድረግ CSS እንጠቀማለን
+st.set_page_config(page_title="BDU Result Calculator", layout="wide")
+
+# Custom CSS for a better UI (ጥቁር ዳራ እና ማራኪ ቀለሞች)
+st.markdown("""
+    <style>
+    .main {
+        background-color: #f0f2f6;
+    }
+    .stButton>button {
+        width: 100%;
+        border-radius: 10px;
+        height: 3em;
+        background-color: #004b91;
+        color: white;
+        font-weight: bold;
+    }
+    .stMetric {
+        background-color: #ffffff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    footer {
+        visibility: hidden;
+    }
+    .developer-credit {
+        text-align: center;
+        padding: 20px;
+        font-size: 14px;
+        color: #555;
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
 # የኢትዮጵያ ዩኒቨርሲቲዎች የውጤት መለኪያ Logic
 def get_grade_info(mark):
@@ -16,8 +49,9 @@ def get_grade_info(mark):
     elif mark >= 40: return 1.0, "D"
     else: return 0.0, "F"
 
-st.title("🎓 BDU Undergraduate Result Calculator")
-st.markdown("---")
+# የርዕስ ክፍል
+st.title("🎓 BDU Result Calculator")
+st.info("ተማሪ ሆይ፦ እዚህ ጋር ከመቶ ያመጣኸውን ውጤት እና የኮርሱን ECTS ብቻ አስገባ።")
 
 # የኮርሶች ዝርዝር (10 ኮርሶች)
 num_courses = 10
@@ -56,7 +90,7 @@ for i in range(num_courses):
 st.markdown("---")
 
 # ጠቅላላ ስሌት
-if st.button("ውጤቴን አስላ", use_container_width=True):
+if st.button("ውጤቴን አስላ"):
     if course_list:
         df = pd.DataFrame(course_list)
         
@@ -78,3 +112,6 @@ if st.button("ውጤቴን አስላ", use_container_width=True):
             st.error(f"ደረጃህ 'Warning' ላይ ነው። (GPA: {gpa:.2f}) ⚠️")
     else:
         st.warning("እባክህ መጀመሪያ ቢያንስ የአንድ ኮርስ ውጤት (Mark) አስገባ።")
+
+# የDeveloper ስም መጨረሻ ላይ
+st.markdown("<br><hr><p class='developer-credit'>Developed by: <b>Belachew Damtie</b></p>", unsafe_allow_html=True)
