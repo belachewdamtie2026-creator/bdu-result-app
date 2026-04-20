@@ -4,38 +4,40 @@ import pandas as pd
 # ገጹን ማዋቀር
 st.set_page_config(page_title="BDU Result Calculator", layout="wide")
 
-# Custom CSS for Soft Off-white Theme
+# Custom CSS - Button ከለሩን በትክክል Force ለማድረግ
 st.markdown("""
     <style>
-    /* ደማቅ ያልሆነ ነጭ ዳራ (Soft Greyish White) */
+    /* ደማቅ ያልሆነ ነጭ ዳራ */
     .stApp {
         background-color: #F8F9FA;
         color: #2C3E50;
     }
     
+    /* የአስላ Button ከለር ማስተካከያ (Stronger CSS) */
+    div.stButton > button:first-child {
+        background-color: #1A365D !important; /* Deep Blue */
+        color: white !important;
+        border-radius: 12px !important;
+        height: 3.5em !important;
+        width: 100% !important;
+        border: none !important;
+        font-weight: bold !important;
+        font-size: 18px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    /* Button ላይ አይጥ ሲያርፍ (Hover) */
+    div.stButton > button:first-child:hover {
+        background-color: #2A4365 !important;
+        box-shadow: 0 4px 15px rgba(26, 54, 93, 0.3) !important;
+        color: #FFFFFF !important;
+    }
+
     /* Input ሳጥኖች */
     div[data-baseweb="input"] > div {
         background-color: #FFFFFF !important;
-        color: #2C3E50 !important;
         border: 1px solid #D1D9E6 !important;
         border-radius: 10px !important;
-    }
-
-    /* አስላ የሚለውን ቁልፍ ዲዛይን (Deep Blue) */
-    .stButton>button {
-        width: 100%;
-        border-radius: 12px;
-        height: 3.5em;
-        background-color: #1A365D;
-        color: white;
-        font-weight: bold;
-        border: none;
-        transition: 0.3s;
-    }
-    
-    .stButton>button:hover {
-        background-color: #2A4365;
-        box-shadow: 0 4px 12px rgba(26, 54, 93, 0.2);
     }
 
     /* ውጤት ማሳያ ካርዶች */
@@ -53,17 +55,12 @@ st.markdown("""
         padding-top: 50px;
         font-size: 14px;
         color: #718096;
-        font-style: italic;
+        font-family: 'Arial', sans-serif;
     }
     
     h1 {
         color: #1A365D;
         text-align: center;
-        font-weight: 800;
-    }
-    
-    b, p {
-        color: #2D3748;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -119,6 +116,7 @@ for i in range(num_courses):
 
 st.markdown("<br>", unsafe_allow_html=True)
 
+# "ውጤቴን አስላ" Button
 if st.button("ውጤቴን አስላ"):
     if course_list:
         df = pd.DataFrame(course_list)
@@ -140,4 +138,5 @@ if st.button("ውጤቴን አስላ"):
     else:
         st.warning("እባክህ መጀመሪያ ውጤት አስገባ።")
 
+# የDeveloper ስም
 st.markdown(f"<p class='developer-credit'>Developed by: <b>Belachew Damtie</b></p>", unsafe_allow_html=True)
