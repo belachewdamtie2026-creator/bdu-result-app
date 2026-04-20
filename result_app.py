@@ -3,7 +3,7 @@ import pandas as pd
 
 st.set_page_config(page_title="BDU Result Calculator", layout="wide")
 
-# CSS - ለኢንተርፌስ እና ለ Slip ዲዛይን
+# CSS - ዲዛይኑን መጀመሪያ መጫን
 st.markdown("""
     <style>
     .stApp { background-color: #F8F9FA; color: #2C3E50; }
@@ -18,22 +18,17 @@ st.markdown("""
     }
     .result-slip {
         background-color: white;
-        padding: 30px;
+        padding: 25px;
         border: 2px solid #1A365D;
         border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         color: #1A365D;
-        margin-top: 30px;
+        margin-top: 20px;
     }
-    .slip-header {
-        text-align: center;
-        border-bottom: 2px solid #1A365D;
-        padding-bottom: 15px;
-        margin-bottom: 20px;
-    }
-    table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; padding: 12px; background-color: #f8f9fa; border-bottom: 2px solid #1A365D; }
-    td { padding: 10px; border-bottom: 1px solid #eee; }
+    .slip-header { text-align: center; border-bottom: 2px solid #1A365D; padding-bottom: 10px; margin-bottom: 20px; }
+    .slip-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .slip-table th { text-align: left; padding: 10px; background-color: #f8f9fa; border-bottom: 1px solid #1A365D; }
+    .slip-table td { padding: 10px; border-bottom: 1px solid #eee; color: #2C3E50; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -52,23 +47,20 @@ def get_grade_info(mark):
 st.title("🎓 BDU Result Calculator")
 
 num_courses = 10
-course_list = []
+course_data = []
 
 h1, h2, h3, h4, h5 = st.columns([3, 1, 1, 1, 1])
-h1.markdown("<b>የኮርሱ ስም</b>", unsafe_allow_html=True)
-h2.markdown("<b>ECTS</b>", unsafe_allow_html=True)
-h3.markdown("<b>ውጤት (100)</b>", unsafe_allow_html=True)
-h4.markdown("<b>Grade</b>", unsafe_allow_html=True)
-h5.markdown("<b>Points</b>", unsafe_allow_html=True)
+h1.write("**የኮርሱ ስም**")
+h2.write("**ECTS**")
+h3.write("**ውጤት (100)**")
+h4.write("**Grade**")
+h5.write("**Points**")
 
 for i in range(num_courses):
     col1, col2, col3, col4, col5 = st.columns([3, 1, 1, 1, 1])
-    with col1:
-        c_name = st.text_input(f"Course {i+1}", key=f"n_{i}", label_visibility="collapsed", placeholder=f"ኮርስ {i+1}")
-    with col2:
-        ects = st.number_input(f"E_{i}", min_value=1.0, value=5.0, key=f"e_{i}", label_visibility="collapsed")
-    with col3:
-        mark = st.number_input(f"M_{i}", min_value=0.0, max_value=100.0, value=0.0, key=f"m_{i}", label_visibility="collapsed")
+    with col1: c_name = st.text_input(f"C{i}", key=f"n_{i}", label_visibility="collapsed", placeholder=f"ኮርስ {i+1}")
+    with col2: ects = st.number_input(f"E{i}", min_value=1.0, value=5.0, key=f"e_{i}", label_visibility="collapsed")
+    with col3: mark = st.number_input(f"M{i}", min_value=0.0, max_value=100.0, value=0.0, key=f"m_{i}", label_visibility="collapsed")
     
     ng, letter = get_grade_info(mark)
     gp = ects * ng
@@ -77,56 +69,48 @@ for i in range(num_courses):
     with col5: st.write(f"**{gp:.2f}**" if mark > 0 else "-")
     
     if mark > 0:
-        course_list.append({"Course": c_name if c_name else f"Course {i+1}", "ECTS": ects, "Mark": mark, "Grade": letter, "GP": gp})
+        course_data.append({"Course": c_name if c_name else f"Course {i+1}", "ECTS": ects, "Mark": mark, "Grade": letter, "GP": gp})
 
 if st.button("ውጤቴን አስላ"):
-    if course_list:
-        total_ects = sum(item['ECTS'] for item in course_list)
-        total_gp = sum(item['GP'] for item in course_list)
+    if course_data:
+        total_ects = sum(c['ECTS'] for c in course_data)
+        total_gp = sum(c['GP'] for c in course_data)
         gpa = total_gp / total_ects
         
         st.balloons()
         
-        # የሰንጠረዡን ረድፎች ለብቻው ማዘጋጀት (ስህተት እንዳይፈጠር)
-        table_rows = ""
-        for item in course_list:
-            table_rows += f"""
-            <tr>
-                <td>{item['Course']}</td>
-                <td>{item['ECTS']}</td>
-                <td>{item['Mark']}</td>
-                <td><b>{item['Grade']}</b></td>
-            </tr>
-            """
+        # የሰንጠረዥ ረድፎችን ማዘጋጀት
+        rows_html = ""
+        for c in course_data:
+            rows_html += f"<tr><td>{c['Course']}</td><td>{c['ECTS']}</td><td>{c['Mark']}</td><td><b>{c['Grade']}</b></td></tr>"
 
-        # ሙሉውን Slip ማቀናጀት
-        slip_html = f"""
+        # ሙሉውን Slip በ HTML ማቅረብ
+        slip_content = f"""
         <div class="result-slip">
             <div class="slip-header">
                 <h2 style="margin:0;">BAHIR DAR UNIVERSITY</h2>
                 <p style="margin:0; color: #718096;">Unofficial Student Semester Result Slip</p>
             </div>
-            <table>
-                <tr>
-                    <th>Course Title</th>
-                    <th>ECTS</th>
-                    <th>Mark</th>
-                    <th>Grade</th>
-                </tr>
-                {table_rows}
+            <table class="slip-table">
+                <thead>
+                    <tr><th>Course Title</th><th>ECTS</th><th>Mark</th><th>Grade</th></tr>
+                </thead>
+                <tbody>
+                    {rows_html}
+                </tbody>
             </table>
-            <div style="display: flex; justify-content: space-between; background: #f8f9fa; padding: 20px; border-radius: 10px; margin-top: 20px; border: 1px solid #eee;">
+            <div style="display: flex; justify-content: space-between; background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #eee;">
                 <div><b>Total ECTS:</b> {int(total_ects)}</div>
-                <div><b>Total Grade Point:</b> {total_gp:.2f}</div>
-                <div style="color: #1A365D; font-size: 22px;"><b>GPA: {gpa:.2f}</b></div>
+                <div><b>Total GP:</b> {total_gp:.2f}</div>
+                <div style="color: #1A365D; font-size: 20px;"><b>GPA: {gpa:.2f}</b></div>
             </div>
-            <div style="text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 15px; font-size: 12px; color: #718096;">
+            <div style="text-align: center; margin-top: 20px; font-size: 11px; color: #718096; border-top: 1px solid #eee; padding-top: 10px;">
                 Generated on 2026 | Developer: <b>Belachew Damtie</b>
             </div>
         </div>
         """
-        st.markdown(slip_html, unsafe_allow_html=True)
+        st.markdown(slip_content, unsafe_allow_html=True)
     else:
         st.warning("እባክህ መጀመሪያ ውጤት አስገባ።")
 
-st.markdown("<p style='text-align:center; color:#718096; padding-top:40px;'>Developer: Belachew Damtie</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center; color:#718096; padding-top:30px;'>Developer: Belachew Damtie</p>", unsafe_allow_html=True)
