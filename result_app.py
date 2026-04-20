@@ -38,7 +38,7 @@ st.markdown("""
         border-radius: 15px;
         color: #1A365D;
         margin-top: 20px;
-        overflow-x: auto; /* ለትናንሽ ስልኮች ሰንጠረዡ እንዳይቆረጥ */
+        overflow-x: auto;
     }
     .slip-header { text-align: center; border-bottom: 2px solid #1A365D; padding-bottom: 10px; margin-bottom: 20px; }
     .slip-table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -46,6 +46,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
+# በምስሉ መሠረት የተስተካከለ የውጤት ሎጅክ
 def get_grade_info(mark):
     if mark >= 90: return 4.0, "A+"
     elif mark >= 85: return 4.0, "A"
@@ -62,10 +63,13 @@ def get_grade_info(mark):
 
 st.title("🎓 BDU Result Calculator")
 
+# የስም መጻፊያ ክፍል
+first_name = st.text_input("First Name", placeholder="ስምዎን እዚህ ያስገቡ...")
+
 num_courses = 10
 course_data = []
 
-# የርዕስ ክፍሎች በስልክ ላይ እንዳይዝረከረኩ
+# የርዕስ ክፍሎች
 h1, h2, h3, h4, h5 = st.columns([2.5, 1, 1.2, 0.8, 1])
 h1.caption("ኮርስ")
 h2.caption("ECTS")
@@ -96,6 +100,9 @@ if st.button("ውጤቴን አስላ"):
         
         st.balloons()
         
+        # የስም አጻጻፍ ሎጅክ
+        display_name = f"{first_name}'s" if first_name else "Your"
+        
         rows_html = ""
         for c in course_data:
             rows_html += f"<tr><td>{c['Course']}</td><td>{c['ECTS']}</td><td>{c['Mark']}</td><td><b>{c['Grade']}</b></td></tr>"
@@ -104,14 +111,14 @@ if st.button("ውጤቴን አስላ"):
         <div class="result-slip">
             <div class="slip-header">
                 <h3 style="margin:0;">BAHIR DAR UNIVERSITY</h3>
-                <p style="margin:0; font-size:12px; color: #718096;">Unofficial Semester Result Slip</p>
+                <p style="margin:5px 0; font-size:16px; font-weight: bold; color: #2C3E50;">{display_name} Result Slip</p>
             </div>
             <table class="slip-table">
                 <tr><th>Course</th><th>ECTS</th><th>Mark</th><th>Grade</th></tr>
                 {rows_html}
             </table>
             <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 14px; font-weight: bold;">
-                <div>ECTS: {int(total_ects)}</div>
+                <div>Total ECTS: {int(total_ects)}</div>
                 <div style="color: #1A365D; font-size: 18px;">GPA: {gpa:.2f}</div>
             </div>
         </div>
@@ -120,4 +127,4 @@ if st.button("ውጤቴን አስላ"):
     else:
         st.warning("እባክህ መጀመሪያ ውጤት አስገባ።")
 
-st.markdown(f"<p style='text-align:center; color:#718096; font-size:10px;'>Developer: Belachew Damtie</p>", unsafe_allow_html=True)
+st.markdown(f"<p style='text-align:center; color:#718096; font-size:10px; margin-top:50px;'>Developer: Belachew Damtie</p>", unsafe_allow_html=True)
