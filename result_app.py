@@ -1,68 +1,76 @@
 import streamlit as st
 import pandas as pd
 
-# ገጹን በሰፊው እና በጠቆር ያለ ዲዛይን ማዋቀር
+# ገጹን በሰፊው እና በ Blue-Black ዲዛይን ማዋቀር
 st.set_page_config(page_title="BDU Result Calculator", layout="wide")
 
-# Custom CSS for Dark Mode Interface
+# Custom CSS for Blue-Black Theme
 st.markdown("""
     <style>
-    /* ሙሉ ዳራውን ጠቆር ያለ ማድረግ */
+    /* ጠቆር ያለ ሰማያዊ ዳራ */
     .stApp {
-        background-color: #0E1117;
-        color: #FFFFFF;
+        background-color: #010B13;
+        color: #E0E6ED;
     }
     
-    /* የኮርስ መጻፊያ ሳጥኖችን ቀለም መቀየር */
+    /* Input ሳጥኖች */
     div[data-baseweb="input"] > div {
-        background-color: #1A1C24 !important;
-        color: white !important;
-        border: 1px solid #30363D !important;
+        background-color: #0A1929 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #1E3A5F !important;
+        border-radius: 8px !important;
     }
 
-    /* የቁጥር መጻፊያ ሳጥኖች */
+    /* የጽሁፍ ሳጥኖች ውስጥ ያለ ጽሁፍ */
     div[data-baseweb="input"] input {
-        color: white !important;
+        color: #FFFFFF !important;
     }
 
-    /* አስላ የሚለውን ቁልፍ ዲዛይን */
+    /* አስላ የሚለውን ቁልፍ ዲዛይን (Electric Blue) */
     .stButton>button {
         width: 100%;
         border-radius: 12px;
         height: 3.5em;
-        background-color: #FF4B4B;
+        background-color: #0078D4;
         color: white;
         font-weight: bold;
         border: none;
-        transition: 0.3s;
+        transition: 0.4s;
     }
     
     .stButton>button:hover {
-        background-color: #FF2B2B;
-        box-shadow: 0 4px 15px rgba(255, 75, 75, 0.4);
+        background-color: #005A9E;
+        box-shadow: 0 0 15px rgba(0, 120, 212, 0.6);
+        border: 1px solid #00BCF2;
     }
 
-    /* ውጤት ማሳያ ካርዶች */
+    /* ውጤት ማሳያ ካርዶች (Deep Navy) */
     div[data-testid="stMetric"] {
-        background-color: #1A1C24;
+        background-color: #0A1929;
         padding: 20px;
         border-radius: 15px;
-        border: 1px solid #30363D;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        border: 1px solid #1E3A5F;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    /* የሜትሪክ ጽሁፍ ቀለሞች */
+    div[data-testid="stMetricValue"] {
+        color: #00BCF2 !important;
     }
 
     /* የዲቨሎፐር ክሬዲት */
     .developer-credit {
         text-align: center;
         padding-top: 50px;
-        font-size: 16px;
-        color: #8B949E;
-        font-family: 'Courier New', Courier, monospace;
+        font-size: 15px;
+        color: #5C7080;
+        letter-spacing: 1px;
     }
     
     h1 {
-        color: #FF4B4B;
+        color: #00BCF2;
         text-align: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -82,25 +90,24 @@ def get_grade_info(mark):
 
 # ርዕስ
 st.title("🎓 BDU Result Calculator")
-st.write("<p style='text-align: center; color: #8B949E;'>ውጤትህን ለማስላት የኮርሱን ECTS እና ከመቶ ያመጣኸውን ውጤት አስገባ</p>", unsafe_allow_html=True)
+st.write("<p style='text-align: center; color: #5C7080;'>የኮርሱን ECTS እና ውጤት በማስገባት የሴሚስተር GPAዎን ያሰሉ</p>", unsafe_allow_html=True)
 st.markdown("<br>", unsafe_allow_html=True)
-
-# የኮርሶች ዝርዝር
-num_courses = 10
-course_list = []
 
 # ርዕሶች
 h1, h2, h3, h4, h5 = st.columns([3, 1, 1, 1, 1])
-h1.markdown("<p style='color: #FF4B4B;'><b>የኮርሱ ስም</b></p>", unsafe_allow_html=True)
-h2.markdown("<p style='color: #FF4B4B;'><b>ECTS</b></p>", unsafe_allow_html=True)
-h3.markdown("<p style='color: #FF4B4B;'><b>ውጤት (100)</b></p>", unsafe_allow_html=True)
-h4.markdown("<p style='color: #FF4B4B;'><b>Grade</b></p>", unsafe_allow_html=True)
-h5.markdown("<p style='color: #FF4B4B;'><b>Points</b></p>", unsafe_allow_html=True)
+h1.markdown("<p style='color: #00BCF2;'><b>የኮርሱ ስም</b></p>", unsafe_allow_html=True)
+h2.markdown("<p style='color: #00BCF2;'><b>ECTS</b></p>", unsafe_allow_html=True)
+h3.markdown("<p style='color: #00BCF2;'><b>ውጤት (100)</b></p>", unsafe_allow_html=True)
+h4.markdown("<p style='color: #00BCF2;'><b>Grade</b></p>", unsafe_allow_html=True)
+h5.markdown("<p style='color: #00BCF2;'><b>Points</b></p>", unsafe_allow_html=True)
+
+num_courses = 10
+course_list = []
 
 for i in range(num_courses):
     col1, col2, col3, col4, col5 = st.columns([3, 1, 1, 1, 1])
     with col1:
-        c_name = st.text_input(f"ኮርስ {i+1}", key=f"name_{i}", label_visibility="collapsed", placeholder=f"የኮርስ {i+1} ስም")
+        c_name = st.text_input(f"ኮርስ {i+1}", key=f"name_{i}", label_visibility="collapsed", placeholder=f"ኮርስ {i+1}")
     with col2:
         ects = st.number_input(f"ECTS_{i}", min_value=1.0, value=5.0, key=f"ects_{i}", label_visibility="collapsed")
     with col3:
@@ -110,16 +117,15 @@ for i in range(num_courses):
     gp = ects * ng
     
     with col4:
-        st.write(f"<p style='padding-top: 10px;'><b>{letter}</b></p>" if mark > 0 else "-", unsafe_allow_html=True)
+        st.write(f"<p style='padding-top: 10px; color: #00BCF2;'><b>{letter}</b></p>" if mark > 0 else "-", unsafe_allow_html=True)
     with col5:
-        st.write(f"<p style='padding-top: 10px;'><b>{gp:.2f}</b></p>" if mark > 0 else "-", unsafe_allow_html=True)
+        st.write(f"<p style='padding-top: 10px; color: #FFFFFF;'><b>{gp:.2f}</b></p>" if mark > 0 else "-", unsafe_allow_html=True)
         
     if mark > 0:
         course_list.append({"ECTS": ects, "Mark": mark, "NG": ng, "GP": gp})
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ጠቅላላ ስሌት
 if st.button("ውጤቴን አስላ"):
     if course_list:
         df = pd.DataFrame(course_list)
@@ -141,5 +147,4 @@ if st.button("ውጤቴን አስላ"):
     else:
         st.warning("እባክህ መጀመሪያ ውጤት አስገባ።")
 
-# የDeveloper ስም
 st.markdown(f"<p class='developer-credit'>Developed by: <b>Belachew Damtie</b></p>", unsafe_allow_html=True)
